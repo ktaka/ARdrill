@@ -131,10 +131,6 @@ public class ARdrillFragment extends RajawaliFragment implements SensorEventList
 		holder.addCallback(mSurfaceListener);
 		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		
-		setLayout();
-		View topPanelLayout = mLayout.findViewById(R.id.top_panel_layout);
-		topPanelLayout.bringToFront();
-		
 		mGravity = new float[3];
 		mSensorManager = (SensorManager) getActivity().getSystemService(
 				Context.SENSOR_SERVICE);
@@ -300,10 +296,11 @@ public class ARdrillFragment extends RajawaliFragment implements SensorEventList
 				mOgre.setScale(.07f);
 				//mOgre.setRotY(90);
 				mOgre.setY(-1);
+				mOgre.setFps(5);
 
-				addChild(mOgre);
+				getCurrentScene().addChild(mOgre);
 				
-				addChild(mPlane);
+				getCurrentScene().addChild(mPlane);
 
 				mOgre.play();
 //				mOgre.play("loop all", true);
@@ -345,48 +342,5 @@ public class ARdrillFragment extends RajawaliFragment implements SensorEventList
 		}
 		
 	}
-	private void setLayout() {
-		msgText1 = (TextView) mLayout.findViewById(R.id.msg_text1);
-		msgText1.setTextColor(Color.BLACK);
-		msgText1.setText(R.string.msg_text1);
-		msgText2 = (TextView) mLayout.findViewById(R.id.msg_text2);
-		msgText2.setTextColor(Color.BLACK);
-		msgText2.setText(R.string.msg_text2);
-		msgText3 = (TextView) mLayout.findViewById(R.id.msg_text3);
-		msgText3.setTextColor(Color.RED);
-		msgText3.setTextSize(30);
-		msgText3.setTypeface(Typeface.DEFAULT_BOLD);
-		msgText4 = (TextView) mLayout.findViewById(R.id.msg_text4);
-		msgText4.setTextColor(Color.RED);
-		msgText4.setTextSize(30);
-		msgText4.setTypeface(Typeface.DEFAULT_BOLD);
-		msgText5 = (TextView) mLayout.findViewById(R.id.msg_text5);
-		msgText5.setTextColor(Color.BLACK);
-		msgText5.setText(R.string.msg_text5);
-		msgText6 = (TextView) mLayout.findViewById(R.id.msg_text6);
-		msgText6.setTextColor(Color.BLACK);
-		msgText6.setText(R.string.msg_text6);
 
-
-//		artText = (TextView) mView.findViewById(R.id.art_text);
-//		artText.setTextColor(Color.BLACK);
-//		artText.setText("前方に倒れた電柱あり!");
-//		artText.setTypeface(Typeface.DEFAULT_BOLD);
-//		artText.setTextSize(25);
-//		
-//		artText2 = (TextView) mView.findViewById(R.id.art_text2);
-//		artText2.setTextColor(Color.BLACK);
-//		artText2.setText("元来た道を戻ってください!");
-//		artText2.setTypeface(Typeface.DEFAULT_BOLD);
-//		artText2.setTextSize(20);
-//		
-//		artImage = (ImageView)mView.findViewById(R.id.art_img);
-//		artImage.setImageResource(R.drawable.sign_turn);
-//		
-//		stpImage = (ImageView) mView.findViewById(R.id.stop_img);
-		
-		msgText3.setText("540");
-		msgText4.setText("4");
-
-	}
 }
