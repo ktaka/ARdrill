@@ -1,94 +1,106 @@
+/*
+ * Copyright (C) 2007 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.itnav.r4r.ardrill;
 
-
-import rajawali.RajawaliActivity;
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.Fragment;
+import android.content.Context;
+import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
+import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.WindowManager;
-import android.os.Build;
+import android.view.ViewGroup.LayoutParams;
 
-public class ARdrillActivity extends RajawaliActivity {
+import java.io.File;
+
+
+public class ARdrillActivity extends Activity implements SensorEventListener {
+
+	private static final float ALPHA = 0.8f;
+	private static final int SENSITIVITY = 5;
 	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_ardrill_ar);
+	private SensorManager mSensorManager;
+	private float mGravity[];
+    ARdrillJNIView mView;
 
-		Window window = getWindow();
-	    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        WindowManager.LayoutParams winParams = window.getAttributes();
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        window.setAttributes(winParams);
+    @Override protected void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+        setContentView(R.layout.ardrill);
+        mView = new ARdrillJNIView(getApplication(), true, 24, 0);
+        mView.setZOrderMediaOverlay(true);
+        addContentView(mView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        setupSensors();
+    }
+    
+    void setupSensors() {
+		mGravity = new float[3];
+		mSensorManager = (SensorManager)getSystemService(
+				Context.SENSOR_SERVICE);
+		mSensorManager.registerListener(this,
+				mSensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR),
+				SensorManager.SENSOR_DELAY_FASTEST);
+    }
 
-		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction()
-					.add(R.id.container, new ARdrillFragment()).commit();
-		}
-	}
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+    	super.onWindowFocusChanged(hasFocus);
+    }
+    
+    @Override protected void onPause() {
+        super.onPause();
+        mView.onPause();
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.ardrill, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	protected void onDestroy() {
-		try {
-			super.onDestroy();
-		} catch (Exception e) {
-		}
-	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
-
-		public PlaceholderFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_ardrill,
-					container, false);
-			return rootView;
-		}
-	}
+    @Override protected void onResume() {
+        super.onResume();
+        mView.onResume();
+    }
 
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
+	public void onSensorChanged(SensorEvent event) {
+		if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
+//			mGravity[0] = ALPHA * mGravity[0] + (1 - ALPHA) * event.values[0];
+//			mGravity[1] = ALPHA * mGravity[1] + (1 - ALPHA) * event.values[1];
+//			mGravity[2] = ALPHA * mGravity[2] + (1 - ALPHA) * event.values[2];
 
-		// Trigger the initial hide() shortly after the activity has been
-		// created, to briefly hint to the user that UI controls
-		// are available.
-//		delayedHide(100);
+			mGravity[0] = event.values[0];
+			mGravity[1] = event.values[1];
+			mGravity[2] = event.values[2];
+			
+			float q[] = new float[4];
+			
+			SensorManager.getQuaternionFromVector(q, event.values);
+			//Log.i("ARdrill", "q[0]=" + q[0]);
+			mView.setCameraAxis(-q[0], -q[1], q[2], q[3]);
+//			mView.setCameraAxis(
+//					event.values[1] - mGravity[1] * SENSITIVITY,
+//					event.values[0] - mGravity[0] * SENSITIVITY, 0);
+			
+		}
+		
 	}
 
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		
+	}
 }
