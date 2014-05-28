@@ -73,16 +73,19 @@ class ARdrillJNIView extends GLSurfaceView {
     private static final boolean DEBUG = false;
     private Context context;
 
+    static final int AVATAR_TYPE_MALE = 0;
+    static final int AVATAR_TYPE_FEMALE = 1;
+    
     public ARdrillJNIView(Context context) {
         super(context);
         this.context = context;
-        init(false, 0, 0);
+        init(false, 0, 0, AVATAR_TYPE_MALE);
     }
 
-    public ARdrillJNIView(Context context, boolean translucent, int depth, int stencil) {
+    public ARdrillJNIView(Context context, boolean translucent, int depth, int stencil, int avatarType) {
         super(context);
         this.context = context;
-        init(translucent, depth, stencil);
+        init(translucent, depth, stencil, avatarType);
     }
 
     @Override
@@ -116,7 +119,7 @@ class ARdrillJNIView extends GLSurfaceView {
     static final int ANIMATION_NUM  = 4;
     private int currentAnimation = 0;
     
-    private void init(boolean translucent, int depth, int stencil) {
+    private void init(boolean translucent, int depth, int stencil, int avatarType) {
     	
     	this.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -156,7 +159,7 @@ class ARdrillJNIView extends GLSurfaceView {
         File extDir = context.getExternalFilesDir(null);
         String extDirPath = extDir.getPath();
         AssetManager assetManager = context.getAssets();
-        ARdrillJNILib.setUp(extDirPath, assetManager);
+        ARdrillJNILib.setUp(extDirPath, assetManager, avatarType);
 
         Renderer renderer = new Renderer();
         setRenderer(renderer);

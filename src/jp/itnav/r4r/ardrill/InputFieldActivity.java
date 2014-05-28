@@ -93,7 +93,7 @@ public class InputFieldActivity extends Activity implements OnClickListener {
 			editHeight.selectAll();
 			mInputHeight = editHeight.getText().toString();
 			Intent intent = new Intent(this, ARdrillActivity.class);
-			intent.putExtra("Gender", mInputGender);
+			intent.putExtra("Gender", 1);
 			intent.putExtra("Age", mInputAge);
 			intent.putExtra("Height", mInputHeight);
 			startActivityForResult(intent, 0);

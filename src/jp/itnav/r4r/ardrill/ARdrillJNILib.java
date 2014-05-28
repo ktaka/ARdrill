@@ -30,7 +30,7 @@ public class ARdrillJNILib {
      * @param width the current view width
      * @param height the current view height
      */
-     public static native void setUp(String extPath, AssetManager assetManager);
+     public static native void setUp(String extPath, AssetManager assetManager, int avatarType);
      public static native void init(int width, int height);
      public static native void step();
      public static native void gainedFocus();

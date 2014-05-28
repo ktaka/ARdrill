@@ -18,6 +18,7 @@ package jp.itnav.r4r.ardrill;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -44,7 +45,9 @@ public class ARdrillActivity extends Activity implements SensorEventListener {
     @Override protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.ardrill);
-        mView = new ARdrillJNIView(getApplication(), true, 24, 0);
+        Intent intent = getIntent();
+        int avatarType = intent.getIntExtra("Gender", ARdrillJNIView.AVATAR_TYPE_MALE);
+        mView = new ARdrillJNIView(getApplication(), true, 24, 0, avatarType);
         mView.setZOrderMediaOverlay(true);
         addContentView(mView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         setupSensors();
