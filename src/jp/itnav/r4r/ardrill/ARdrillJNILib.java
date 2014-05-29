@@ -38,4 +38,6 @@ public class ARdrillJNILib {
      public static native void pause();
      public static native void setCameraAxis(float x, float y, float z, float w);
      public static native void setAnimationNumber(int number);
+     public static native void setWaterLevel(float level);
+     public static native void setAnimationSpeed(float speed);
 }

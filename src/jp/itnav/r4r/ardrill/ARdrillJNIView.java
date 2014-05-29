@@ -129,6 +129,7 @@ class ARdrillJNIView extends GLSurfaceView {
 					currentAnimation = ANIMATION_ALL;
 				}
 				ARdrillJNILib.setAnimationNumber(currentAnimation);
+	    		ARdrillJNILib.setAnimationSpeed(0.1f);
 			}
 		});
 
@@ -160,6 +161,7 @@ class ARdrillJNIView extends GLSurfaceView {
         String extDirPath = extDir.getPath();
         AssetManager assetManager = context.getAssets();
         ARdrillJNILib.setUp(extDirPath, assetManager, avatarType);
+        ARdrillJNILib.setWaterLevel(90.0f);
 
         Renderer renderer = new Renderer();
         setRenderer(renderer);
