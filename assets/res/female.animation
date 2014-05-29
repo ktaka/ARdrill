@@ -9,9 +9,10 @@ animation animations
     }
     clip walking
     {
-        begin = 194
+        begin = 195
         end = 224
         repeatCount = INDEFINITE
+	speed = 0.5
     }
     clip running
     {
